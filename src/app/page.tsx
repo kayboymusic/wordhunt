@@ -8,6 +8,7 @@ import { Keyboard } from "@/components/Keyboard/Keyboard";
 import { WinModal } from "@/components/Modals/WinModal";
 import { LossModal } from "@/components/Modals/LossModal";
 import { ShareModal } from "@/components/Modals/ShareModal";
+import { ColorPicker } from "@/components/ColorPicker/ColorPicker";
 import { getDailyWord } from "@/lib/utils/getDailyWord";
 
 export default function Home() {
@@ -53,12 +54,14 @@ export default function Home() {
     <>
       <header className="header">
         <span className="header-title">WordHunt</span>
-        <button
-          className="btn btn-primary"
-          style={{ padding: "8px 16px", fontSize: "0.8rem", display: "inline-flex", alignItems: "center", gap: 6 }}
-          onClick={() => setShowShare(true)}
-          aria-label="Share"
-        >
+        <div className="header-actions">
+          <ColorPicker />
+          <button
+            className="btn btn-primary"
+            style={{ padding: "8px 16px", fontSize: "0.8rem", display: "inline-flex", alignItems: "center", gap: 6 }}
+            onClick={() => setShowShare(true)}
+            aria-label="Share"
+          >
           <svg
             width="14"
             height="14"
@@ -76,8 +79,9 @@ export default function Home() {
             <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
           </svg>
-          Share
-        </button>
+            Share
+          </button>
+        </div>
       </header>
 
       {challengeState && (
