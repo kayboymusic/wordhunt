@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
+import confetti from "canvas-confetti";
 import { useGameStore } from "@/store/gameStore";
 import { useGame } from "@/hooks/useGame";
 import { GameBoard } from "@/components/GameBoard/GameBoard";
@@ -10,6 +11,29 @@ import { LossModal } from "@/components/Modals/LossModal";
 import { ShareModal } from "@/components/Modals/ShareModal";
 import { ColorPicker } from "@/components/ColorPicker/ColorPicker";
 import { getDailyWord } from "@/lib/utils/getDailyWord";
+
+const CONFETTI_COLORS = [
+  "#538d4e", "#5B40DE", "#FF047D", "#DA5B1D", "#0067E0", "#b59f3b", "#ffffff",
+];
+
+function fireWinConfetti() {
+  const base = {
+    ticks: 180,
+    gravity: 0.9,
+    decay: 0.93,
+    startVelocity: 40,
+    colors: CONFETTI_COLORS,
+  };
+  confetti({ ...base, particleCount: 110, spread: 100, origin: { x: 0.5, y: 0.6 } });
+  setTimeout(
+    () => confetti({ ...base, particleCount: 55, spread: 70, angle: 60,  origin: { x: 0.1, y: 0.7 } }),
+    180,
+  );
+  setTimeout(
+    () => confetti({ ...base, particleCount: 55, spread: 70, angle: 120, origin: { x: 0.9, y: 0.7 } }),
+    360,
+  );
+}
 
 export default function Home() {
   const { status, guesses, error, challenge: challengeState, setError } = useGameStore();
@@ -21,8 +45,15 @@ export default function Home() {
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    if (status === "won") setTimeout(() => setShowWin(true), 1600);
-    if (status === "lost") setTimeout(() => setShowLoss(true), 1600);
+    if (status === "won") {
+      const confettiT = setTimeout(fireWinConfetti, 1100);
+      const modalT = setTimeout(() => setShowWin(true), 1800);
+      return () => { clearTimeout(confettiT); clearTimeout(modalT); };
+    }
+    if (status === "lost") {
+      const t = setTimeout(() => setShowLoss(true), 1600);
+      return () => clearTimeout(t);
+    }
   }, [status]);
 
   useEffect(() => {
