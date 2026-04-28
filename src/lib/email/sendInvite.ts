@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
-
 interface SendChallengeInviteParams {
   to: string;
   fromEmail: string;
@@ -15,6 +13,12 @@ export async function sendChallengeInvite({
   challengeId,
   inviteToken,
 }: SendChallengeInviteParams): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
+  const resend = new Resend(apiKey);
+
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const inviteUrl = `${appUrl}/challenge/${challengeId}?token=${inviteToken}`;
 
