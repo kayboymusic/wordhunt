@@ -12,6 +12,7 @@ interface GameStore {
   keyStates: KeyState;
   error: string | null;
   isLoading: boolean;
+  shakeKey: number;
 
   setSessionId: (id: string) => void;
   addGuess: (guess: EvaluatedGuess) => void;
@@ -20,6 +21,7 @@ interface GameStore {
   setChallenge: (challenge: ChallengeState | null) => void;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
+  triggerShake: () => void;
   reset: () => void;
 }
 
@@ -32,6 +34,7 @@ const initialState = {
   keyStates: {},
   error: null,
   isLoading: false,
+  shakeKey: 0,
 };
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -50,9 +53,10 @@ export const useGameStore = create<GameStore>((set) => ({
         empty: 0,
       };
       for (const { letter, state: letterState } of guess.result) {
-        const current = newKeyStates[letter];
+        const k = letter.toUpperCase();
+        const current = newKeyStates[k];
         if (!current || priority[letterState] > priority[current]) {
-          newKeyStates[letter] = letterState;
+          newKeyStates[k] = letterState;
         }
       }
       return { guesses: [...state.guesses, guess], keyStates: newKeyStates };
@@ -63,5 +67,6 @@ export const useGameStore = create<GameStore>((set) => ({
   setChallenge: (challenge) => set({ challenge }),
   setError: (error) => set({ error }),
   setLoading: (isLoading) => set({ isLoading }),
+  triggerShake: () => set((s) => ({ shakeKey: s.shakeKey + 1 })),
   reset: () => set(initialState),
 }));

@@ -94,12 +94,28 @@ body {
   text-transform: uppercase;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border: 2px solid var(--color-border);
+  border: 1px solid rgba(0, 0, 0, 0.55);
+  border-radius: 9px;
   user-select: none;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.55),
+    0 -1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.55),
+    0 3px 6px rgba(0, 0, 0, 0.7),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.5),
+    inset 1px 0 0 rgba(255, 255, 255, 0.06),
+    inset -1px 0 0 rgba(0, 0, 0, 0.3);
 }
 
 .tile-front {
-  background: var(--color-empty);
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.04) 38%,
+      rgba(255, 255, 255, 0) 62%),
+    linear-gradient(160deg, #232326 0%, #131315 55%, #08080a 100%);
   z-index: 1;
 }
 
@@ -109,32 +125,60 @@ body {
 
 /* Front face states */
 .tile-typing-base {
-  border-color: var(--color-border);
+  border-color: rgba(0, 0, 0, 0.55);
 }
 
 .tile-typing {
-  border-color: var(--color-border-typing) !important;
-  animation: tile-pop 0.1s ease;
+  border-color: #b8b8bb !important;
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.06) 38%,
+      rgba(255, 255, 255, 0) 62%),
+    linear-gradient(160deg, #34343a 0%, #1f1f23 55%, #131316 100%);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.75),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.5),
+    inset 1px 0 0 rgba(255, 255, 255, 0.08),
+    inset -1px 0 0 rgba(0, 0, 0, 0.3);
+  animation: tile-pop 0.12s ease;
 }
 
 .tile-empty {
-  border-color: var(--color-border);
+  border-color: rgba(0, 0, 0, 0.55);
 }
 
 /* Back face color states */
 .tile-correct {
-  background: var(--color-correct);
-  border-color: var(--color-correct);
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.32) 0%,
+      rgba(255, 255, 255, 0.08) 38%,
+      rgba(255, 255, 255, 0) 62%),
+    linear-gradient(160deg, #7ab970 0%, #538d4e 55%, #355e30 100%);
+  border-color: #2c4f28;
 }
 
 .tile-present {
-  background: var(--color-present);
-  border-color: var(--color-present);
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.36) 0%,
+      rgba(255, 255, 255, 0.1) 38%,
+      rgba(255, 255, 255, 0) 62%),
+    linear-gradient(160deg, #e8cf5c 0%, #b59f3b 55%, #7a6a23 100%);
+  border-color: #6b5d20;
 }
 
 .tile-absent {
-  background: var(--color-absent);
-  border-color: var(--color-absent);
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.04) 38%,
+      rgba(255, 255, 255, 0) 62%),
+    linear-gradient(160deg, #56565a 0%, #3a3a3c 55%, #232326 100%);
+  border-color: #1f1f21;
 }
 
 @keyframes tile-pop {
@@ -145,14 +189,15 @@ body {
 
 @keyframes tile-shake {
   0%, 100% { transform: translateX(0); }
-  20%       { transform: translateX(-4px); }
-  40%       { transform: translateX(4px); }
-  60%       { transform: translateX(-4px); }
-  80%       { transform: translateX(4px); }
+  10%      { transform: translateX(-9px); }
+  25%      { transform: translateX(9px); }
+  45%      { transform: translateX(-7px); }
+  65%      { transform: translateX(7px); }
+  85%      { transform: translateX(-3px); }
 }
 
 .row-shake {
-  animation: tile-shake 0.4s ease;
+  animation: tile-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
 @keyframes tile-bounce {
@@ -294,6 +339,63 @@ body {
 
 .input:focus {
   border-color: var(--color-border-typing);
+}
+
+/* ── Share modal ── */
+.share-link-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 14px;
+}
+
+.share-link-input {
+  flex: 1;
+  font-size: 0.85rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.share-copy-btn {
+  padding: 0 16px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.share-targets {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.share-target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 6px 0;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 0.7rem;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.share-target:hover { transform: translateY(-2px); opacity: 0.9; }
+
+.share-target-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.share-target-label {
+  font-weight: 600;
 }
 
 /* ── Challenge Banner ── */

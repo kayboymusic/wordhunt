@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { Tile } from "@/components/Tile/Tile";
 import { LetterState } from "@/types";
@@ -8,7 +9,20 @@ const MAX_GUESSES = 6;
 const WORD_LENGTH = 5;
 
 export function GameBoard() {
-  const { guesses, currentGuess, status } = useGameStore();
+  const { guesses, currentGuess, status, shakeKey } = useGameStore();
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    if (shakeKey === 0) return;
+    const el = rowRefs.current[guesses.length];
+    if (!el) return;
+    el.classList.remove("row-shake");
+    // Force reflow so the animation restarts on consecutive invalid guesses
+    void el.offsetWidth;
+    el.classList.add("row-shake");
+    const t = setTimeout(() => el.classList.remove("row-shake"), 500);
+    return () => clearTimeout(t);
+  }, [shakeKey, guesses.length]);
 
   const rows = Array.from({ length: MAX_GUESSES }, (_, rowIdx) => {
     const submitted = guesses[rowIdx];
@@ -33,7 +47,12 @@ export function GameBoard() {
   return (
     <div className="game-board" role="grid" aria-label="WordHunt game board">
       {rows.map((row, rowIdx) => (
-        <div key={rowIdx} className="game-row" role="row">
+        <div
+          key={rowIdx}
+          ref={(el) => { rowRefs.current[rowIdx] = el; }}
+          className="game-row"
+          role="row"
+        >
           {row.map(({ letter, state, colIdx }) => (
             <Tile
               key={colIdx}

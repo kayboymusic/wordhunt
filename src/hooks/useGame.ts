@@ -109,7 +109,8 @@ export function useGame(challengeId?: string) {
     const word = currentGuess.toLowerCase();
 
     if (!ALL_VALID.has(word)) {
-      store.setError("Not in word list");
+      store.setError("Not found in the list");
+      store.triggerShake();
       return;
     }
 
@@ -145,6 +146,7 @@ export function useGame(challengeId?: string) {
 
       if (!res.ok) {
         store.setError(data.error ?? "Invalid guess");
+        store.triggerShake();
         return;
       }
 

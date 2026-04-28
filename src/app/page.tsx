@@ -3,24 +3,20 @@
 import { useEffect, useCallback, useState } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { useGame } from "@/hooks/useGame";
-import { useChallenge } from "@/hooks/useChallenge";
 import { GameBoard } from "@/components/GameBoard/GameBoard";
 import { Keyboard } from "@/components/Keyboard/Keyboard";
 import { WinModal } from "@/components/Modals/WinModal";
 import { LossModal } from "@/components/Modals/LossModal";
-import { ChallengeModal } from "@/components/Modals/ChallengeModal";
+import { ShareModal } from "@/components/Modals/ShareModal";
+import { getDailyWord } from "@/lib/utils/getDailyWord";
 
 export default function Home() {
   const { status, guesses, error, challenge: challengeState, setError } = useGameStore();
   const { onKey } = useGame();
-  const { createChallenge } = useChallenge(null);
 
   const [showWin, setShowWin] = useState(false);
   const [showLoss, setShowLoss] = useState(false);
-  const [showChallenge, setShowChallenge] = useState(false);
-  const [challengeSent, setChallengeSent] = useState(false);
-  const [challengeLoading, setChallengeLoading] = useState(false);
-  const [challengeError, setChallengeError] = useState<string | null>(null);
+  const [showShare, setShowShare] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,7 +30,7 @@ export default function Home() {
     const t = setTimeout(() => {
       setToast(null);
       setError(null);
-    }, 1800);
+    }, 2000);
     return () => clearTimeout(t);
   }, [error, setError]);
 
@@ -53,29 +49,34 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  async function handleCreateChallenge(creatorEmail: string, opponentEmail: string) {
-    setChallengeLoading(true);
-    setChallengeError(null);
-    const token = localStorage.getItem("wh_player_token") ?? "";
-    const result = await createChallenge(creatorEmail, opponentEmail, token);
-    setChallengeLoading(false);
-    if (!result) {
-      setChallengeError("Failed to send invite. Try again.");
-    } else {
-      setChallengeSent(true);
-    }
-  }
-
   return (
     <>
       <header className="header">
         <span className="header-title">WordHunt</span>
         <button
           className="btn btn-primary"
-          style={{ padding: "8px 16px", fontSize: "0.8rem" }}
-          onClick={() => { setShowChallenge(true); setChallengeSent(false); setChallengeError(null); }}
+          style={{ padding: "8px 16px", fontSize: "0.8rem", display: "inline-flex", alignItems: "center", gap: 6 }}
+          onClick={() => setShowShare(true)}
+          aria-label="Share"
         >
-          Challenge
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+          </svg>
+          Share
         </button>
       </header>
 
@@ -99,27 +100,19 @@ export default function Home() {
         <WinModal
           guessCount={guesses.length}
           onClose={() => setShowWin(false)}
-          onChallenge={() => { setShowWin(false); setShowChallenge(true); setChallengeSent(false); }}
+          onChallenge={() => { setShowWin(false); setShowShare(true); }}
         />
       )}
 
       {showLoss && (
         <LossModal
-          answer=""
+          answer={getDailyWord()}
           onClose={() => setShowLoss(false)}
-          onChallenge={() => { setShowLoss(false); setShowChallenge(true); setChallengeSent(false); }}
+          onChallenge={() => { setShowLoss(false); setShowShare(true); }}
         />
       )}
 
-      {showChallenge && (
-        <ChallengeModal
-          onClose={() => setShowChallenge(false)}
-          onCreate={handleCreateChallenge}
-          loading={challengeLoading}
-          error={challengeError}
-          sent={challengeSent}
-        />
-      )}
+      {showShare && <ShareModal onClose={() => setShowShare(false)} />}
     </>
   );
 }
