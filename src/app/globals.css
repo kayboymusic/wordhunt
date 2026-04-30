@@ -14,8 +14,8 @@
   --color-text: #ffffff;
   --color-bg: #121213;
   --color-key-bg: #818384;
-  --tile-size: 62px;
-  --tile-gap: 5px;
+  --tile-size: clamp(52px, 15.5vw, 62px);
+  --tile-gap: clamp(4px, 1vw, 5px);
 }
 
 * {
@@ -32,6 +32,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ── Header ── */
@@ -41,15 +43,17 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   padding: 12px 16px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .header-title {
-  font-size: 1.5rem;
+  font-size: clamp(1.05rem, 4.5vw, 1.5rem);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 /* ── Game Board ── */
@@ -92,7 +96,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: clamp(1.7rem, 6vw, 2rem);
   font-weight: 800;
   text-transform: uppercase;
   backface-visibility: hidden;
@@ -246,6 +250,8 @@ body {
   align-items: center;
   justify-content: center;
   user-select: none;
+  padding: 0;
+  touch-action: manipulation;
 }
 
 .key:disabled {
@@ -352,6 +358,30 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.header-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--color-text);
+  transition: background 0.15s;
+}
+.header-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.share-btn {
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .color-picker {
@@ -492,6 +522,56 @@ body {
   color: #fff;
 }
 
+/* ── How to Play ── */
+.howto-modal {
+  text-align: left;
+  max-width: 440px;
+}
+
+.howto-modal .modal-title,
+.howto-modal .modal-actions {
+  text-align: center;
+}
+
+.howto-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.howto-example {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.howto-row {
+  --tile-size: 38px;
+  display: grid;
+  grid-template-columns: repeat(5, var(--tile-size));
+  gap: 4px;
+  perspective: 500px;
+}
+
+.howto-row .tile-face {
+  font-size: 1.15rem;
+  border-radius: 6px;
+}
+
+.howto-text {
+  color: #ccc;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.howto-text strong {
+  color: #fff;
+}
+
 /* ── Notification toast ── */
 .toast {
   position: fixed;
@@ -511,4 +591,73 @@ body {
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Mobile tweaks ── */
+@media (max-width: 480px) {
+  .header {
+    padding: 10px 12px;
+  }
+
+  .keyboard {
+    padding: 10px 0 16px;
+    gap: 6px;
+  }
+
+  .keyboard-row {
+    gap: 4px;
+    padding: 0 2px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .key {
+    height: clamp(56px, 16vw, 60px);
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 43px;
+    border-radius: 5px;
+    font-size: clamp(0.85rem, 3.2vw, 1rem);
+  }
+
+  .key-wide {
+    flex: 1.5 1 0;
+    max-width: 65px;
+    font-size: clamp(0.65rem, 2.2vw, 0.8rem);
+  }
+
+  .modal {
+    padding: 24px 18px;
+  }
+
+  .modal-title {
+    font-size: 1.3rem;
+  }
+
+  .share-btn {
+    padding: 7px 10px;
+  }
+
+  .share-targets {
+    gap: 6px;
+  }
+
+  .share-target {
+    font-size: 0.65rem;
+  }
+
+  .share-target-icon {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 360px) {
+  .share-btn-label {
+    display: none;
+  }
+
+  .share-btn {
+    padding: 8px 10px;
+  }
 }

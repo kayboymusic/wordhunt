@@ -9,6 +9,7 @@ import { Keyboard } from "@/components/Keyboard/Keyboard";
 import { WinModal } from "@/components/Modals/WinModal";
 import { LossModal } from "@/components/Modals/LossModal";
 import { ShareModal } from "@/components/Modals/ShareModal";
+import { HowToPlayModal } from "@/components/Modals/HowToPlayModal";
 import { ColorPicker } from "@/components/ColorPicker/ColorPicker";
 import { getDailyWord } from "@/lib/utils/getDailyWord";
 
@@ -42,6 +43,7 @@ export default function Home() {
   const [showWin, setShowWin] = useState(false);
   const [showLoss, setShowLoss] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [showHowTo, setShowHowTo] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
@@ -86,10 +88,31 @@ export default function Home() {
       <header className="header">
         <span className="header-title">WordHunt</span>
         <div className="header-actions">
+          <button
+            className="header-icon-btn"
+            onClick={() => setShowHowTo(true)}
+            aria-label="How to play"
+            title="How to play"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </button>
           <ColorPicker />
           <button
-            className="btn btn-primary"
-            style={{ padding: "8px 16px", fontSize: "0.8rem", display: "inline-flex", alignItems: "center", gap: 6 }}
+            className="btn btn-primary share-btn"
             onClick={() => setShowShare(true)}
             aria-label="Share"
           >
@@ -110,7 +133,7 @@ export default function Home() {
             <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
           </svg>
-            Share
+            <span className="share-btn-label">Share</span>
           </button>
         </div>
       </header>
@@ -148,6 +171,8 @@ export default function Home() {
       )}
 
       {showShare && <ShareModal onClose={() => setShowShare(false)} />}
+
+      {showHowTo && <HowToPlayModal onClose={() => setShowHowTo(false)} />}
     </>
   );
 }
