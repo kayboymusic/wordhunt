@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import { useGameStore } from "@/store/gameStore";
 import { useGame } from "@/hooks/useGame";
@@ -10,7 +10,10 @@ import { WinModal } from "@/components/Modals/WinModal";
 import { LossModal } from "@/components/Modals/LossModal";
 import { ShareModal } from "@/components/Modals/ShareModal";
 import { HowToPlayModal } from "@/components/Modals/HowToPlayModal";
+import { WelcomeModal } from "@/components/Modals/WelcomeModal";
 import { ColorPicker } from "@/components/ColorPicker/ColorPicker";
+import { AuthButton } from "@/components/AuthButton/AuthButton";
+import { supabase } from "@/lib/supabase/client";
 import { getDailyWord } from "@/lib/utils/getDailyWord";
 
 const CONFETTI_COLORS = [
@@ -37,14 +40,33 @@ function fireWinConfetti() {
 }
 
 export default function Home() {
-  const { status, guesses, error, challenge: challengeState, setError } = useGameStore();
+  const { status, guesses, error, challenge: challengeState, setError, sessionId, isLoading } = useGameStore();
   const { onKey } = useGame();
 
   const [showWin, setShowWin] = useState(false);
   const [showLoss, setShowLoss] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [showHowTo, setShowHowTo] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
+  const welcomeDecided = useRef(false);
+  useEffect(() => {
+    if (welcomeDecided.current) return;
+    if (sessionId === null || isLoading) return;
+    welcomeDecided.current = true;
+    if (guesses.length > 0) return;
+    let cancelled = false;
+    supabase.auth.getUser().then(({ data }) => {
+      if (cancelled) return;
+      if (!data.user) setShowWelcome(true);
+    });
+    return () => { cancelled = true; };
+  }, [sessionId, isLoading, guesses.length]);
+
+  const dismissWelcome = useCallback(() => {
+    setShowWelcome(false);
+  }, []);
 
   useEffect(() => {
     if (status === "won") {
@@ -135,6 +157,7 @@ export default function Home() {
           </svg>
             <span className="share-btn-label">Share</span>
           </button>
+          <AuthButton />
         </div>
       </header>
 
@@ -173,6 +196,8 @@ export default function Home() {
       {showShare && <ShareModal onClose={() => setShowShare(false)} />}
 
       {showHowTo && <HowToPlayModal onClose={() => setShowHowTo(false)} />}
+
+      {showWelcome && <WelcomeModal onGuest={dismissWelcome} />}
     </>
   );
 }

@@ -384,6 +384,87 @@ body {
   gap: 6px;
 }
 
+/* ── Welcome modal ── */
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+.btn-google {
+  background: #fff;
+  color: #1f1f1f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn-google:hover:not(:disabled) { opacity: 0.9; }
+
+/* ── Auth ── */
+.auth-popover-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.auth-avatar-btn {
+  padding: 2px;
+}
+.auth-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+}
+.auth-avatar-fallback {
+  background: var(--color-key-bg, #818384);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.auth-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: var(--color-bg, #121213);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  padding: 6px;
+  z-index: 50;
+}
+.auth-popover-email {
+  padding: 8px 10px 6px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #a0a0a0);
+  word-break: break-all;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+}
+.auth-popover-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.auth-popover-item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+}
+.auth-popover-item:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .color-picker {
   position: relative;
 }
